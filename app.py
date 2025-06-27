@@ -58,9 +58,9 @@ def analytics():
     if 'credentials' not in session:
         return redirect(url_for('login'))
 
-    channel_id = request.args.get("channel_id")
-    if not channel_id:
-        return jsonify({"error": "Missing channel_id in request"}), 400
+    # channel_id = request.args.get("channel_id")
+    # if not channel_id:
+    #     return jsonify({"error": "Missing channel_id in request"}), 400
 
     creds_data = session['credentials']
     credentials = Credentials(
@@ -75,12 +75,13 @@ def analytics():
     try:
         youtube = build("youtube", "v3", credentials=credentials)
         channels_response = youtube.channels().list(
-            part="snippet,statistics",
-            id=channel_id
-            # part="id",
-            # mine=True
+            # part="snippet,statistics",
+            # id=channel_id
+            part="id",
+            mine=True
         ).execute()
 
+        print(channels_response, 'chennals list')
         channel_id = channels_response['items'][0]['id']
 
         analytics = build("youtubeAnalytics", "v2", credentials=credentials)
@@ -93,10 +94,8 @@ def analytics():
             sort="-views",
             maxResults=50
         ).execute()
-
-
-
-
+        
+        
         return jsonify({
             "channel_id": channel_id,
             "report": report

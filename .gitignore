@@ -1,0 +1,4 @@
+.venv
+/.venv
+client_secret.json
+*.json
